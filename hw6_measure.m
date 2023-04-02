@@ -26,20 +26,14 @@ scatter(pos_x, pos_y);
 
 angle_origin = table2array(readtable('data/hw6/rotate_custom-angle.csv'));
 distance_origin = table2array(readtable('data/hw6/rotate_custom-readings.csv'));
-[pos_x, pos_y] = neeto_to_global_all(-0.1778, -0.7, deg2rad(50), distance_origin, angle_origin); 
+[pos_x, pos_y] = neeto_to_global_all(0.1778, 0.7, deg2rad(50), distance_origin, angle_origin); 
 scatter(pos_x, pos_y);
 
 angle_origin = table2array(readtable('data/hw6/rotate_custom2-angle.csv'));
 distance_origin = table2array(readtable('data/hw6/rotate_custom2-readings.csv'));
-[pos_x, pos_y] = neeto_to_global_all(0.3302, 0.3302, (5/4) * pi, distance_origin, angle_origin); 
+[pos_x, pos_y] = neeto_to_global_all(-0.3302, -0.3302, (5/4) * pi, distance_origin, angle_origin); 
 scatter(pos_x, pos_y);
-
-%polarplot(angle_origin,distance_origin,'ks')
-
-% 7 inches 
-% 28.5 inches
-% 65 degres 
-
-
-
-
+%
+%
+figure(); 
+polarplot(angle_origin, distance_origin, 'ks');
