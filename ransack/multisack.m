@@ -14,12 +14,10 @@ function [fit_segs_start, fit_segs_end] = multisack(scan_data, d, g, n)
 
             % debug plots, comment out for prod code
             scatter(fit_inliers(:,1), fit_inliers(:,2));
-        end
-        % processed all
-        if(size(outliers, 1) == 0)
+        else
+             % no good fits left
             break;
         end
         size(outliers, 1)
     end
-    outliers
 end

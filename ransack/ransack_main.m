@@ -11,11 +11,12 @@ scan_data = [r .* cosd(theta), r .* sind(theta)];
 scan_data = filter_by_row(scan_data, @(x) (x(1)));
 
 figure(); hold on;
-[fit_segs_start, fit_segs_end] = multisack(scan_data, 0.1, 0.1, 100);
+[fit_segs_start, fit_segs_end] = multisack(scan_data, 0.15, 0.15, 10000);
 
 for seg=1:size(fit_segs_start,1)
     plot([fit_segs_start(seg,1), fit_segs_end(seg,1)],[fit_segs_start(seg,2), fit_segs_end(seg,2)], 'red');
 end
+exportgraphics(gcf,'scan4-out.png','Resolution',1500)
 
 %plot_in = scatter(fit_inliers(:,1), fit_inliers(:,2), 'green');
 %plot_out = scatter(fit_outliers(:,1), fit_outliers(:,2), 'red');
