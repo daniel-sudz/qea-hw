@@ -1,4 +1,36 @@
+# ----------------------------------------- https://github.com/github/gitignore/blob/main/Global/MATLAB.gitignore ----------------------------------------- #
+# Windows default autosave extension
 *.asv
+
+# OSX / *nix default autosave extension
+*.m~
+
+# Compiled MEX binaries (all platforms)
+*.mex*
+
+# Packaged app and toolbox files
+*.mlappinstall
+*.mltbx
+
+# Generated helpsearch folders
+helpsearch*/
+
+# Simulink code generation folders
+slprj/
+sccprj/
+
+# Matlab code generation folders
+codegen/
+
+# Simulink autosave extension
+*.autosave
+
+# Simulink cache files
+*.slxc
+
+# Octave session info
+octave-workspace
+# ----------------------------------------- https://github.com/github/gitignore/blob/main/Global/MATLAB.gitignore ----------------------------------------- #
 
 
 # ----------------------------------------- https://github.com/github/gitignore/blob/main/Global/macOS.gitignore ----------------------------------------- #
@@ -29,3 +61,31 @@ Network Trash Folder
 Temporary Items
 .apdisk
 # ----------------------------------------- https://github.com/github/gitignore/blob/main/Global/macOS.gitignore ----------------------------------------- #
+
+# ----------------------------------------- https://github.com/github/gitignore/blob/main/Global/Windows.gitignore ----------------------------------------- #
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+# ----------------------------------------- https://github.com/github/gitignore/blob/main/Global/Windows.gitignore ----------------------------------------- #
