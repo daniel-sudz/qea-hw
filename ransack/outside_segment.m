@@ -2,7 +2,7 @@
 % direction
 % As a simplified model, points cannot be inliers if they are not in the
 % segment range
-function [valid] = outside_segment(line_start, line_end, point)
+function [outside] = outside_segment(line_start, line_end, point)
     % convert to vector form
     line_end = line_end - line_start;
     point = point - line_start; 
@@ -13,8 +13,8 @@ function [valid] = outside_segment(line_start, line_end, point)
     y_loc_end_seg = line_end * line'; 
 
     if((y_loc_point < 0) | (y_loc_point > y_loc_end_seg))
-        valid = 0;
+        outside = 1;
     else
-        valid = 1;
+        outside = 0;
     end
 end
