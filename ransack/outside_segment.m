@@ -9,10 +9,10 @@ function [outside] = outside_segment(line_start, line_end, point)
     line = line_end ./ norm(line_end);
 
     % calculate y-axis location 
-    y_loc_point = point * line';
-    y_loc_end_seg = line_end * line'; 
+    y_loc_point = point' * line;
+    y_loc_end_seg = line_end' * line;
 
-    if((y_loc_point < 0) | (y_loc_point > y_loc_end_seg))
+    if((y_loc_point < 0) || (y_loc_point > y_loc_end_seg))
         outside = 1;
     else
         outside = 0;
