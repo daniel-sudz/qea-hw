@@ -1,4 +1,4 @@
-function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack(scan_data, d, g, n)
+function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack(scan_data, d, g, min_points, n)
     % init return state format
     fit_seg_start = [-1; -1]; 
     fit_seg_end = [-1; -1]; 
@@ -22,7 +22,7 @@ function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack(scan_dat
             % check for largest gap threshold
             if(longest_gap(seg_start, seg_end, inliers) < g)
                 % save the best solution
-                if(size(inliers, 1) > size(fit_inliers, 1) && size(inliers, 1) >= 5)
+                if(size(inliers, 1) > size(fit_inliers, 1) && size(inliers, 1) >= min_points)
                     fit_seg_start = seg_start;
                     fit_seg_end = seg_end;
                     fit_inliers = inliers;

@@ -12,6 +12,7 @@ classdef SackState < handle
       % RANSACK LINE FIT --------------------------------------------------
       line_vertical_thresh = 0.1; % inlier threhold for vertical line fit
       line_horizontal_gap_thresh = 0.1; % inlier threshold for line fit gap
+      line_min_pints = 5; % minimum point requirements for line model
       line_num_iters = 1000; % how many times to sample for line fit
       % RANSACK LINE FIT --------------------------------------------------
 
@@ -35,7 +36,7 @@ classdef SackState < handle
       function obj = SackState()
       end
       function [model_found] = sack_iter(self)
-            [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack_line(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_num_iters);
+            [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack_line(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_min_pints, SackState.line_num_iters);
             [fit_circle_start, fit_circle_rad, circle_fit_inliers, circle_fit_outliers] = sack_circle(self.outliers, SackState.circle_distance_thresh, SackState.circle_min_pints, SackState.circle_num_iters);
             if(size(line_fit_inliers,1) == 0 && size(circle_fit_inliers,1) == 0)
                 % no suitable model left in data
