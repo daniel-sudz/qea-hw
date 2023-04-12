@@ -18,7 +18,7 @@ classdef SackState < handle
 
       % RANSACK CIRCLE FIT --------------------------------------------------
       circle_distance_thresh = 0.1; % inlier threshold for distance to circle model
-      circle_min_pints = 10; % minimum point requirements for circle model
+      circle_min_pints = 5; % minimum point requirements for circle model
       circle_gap_threshold_degrees = 20; % max gap threshold of fit in degrees
       circle_num_iters = 1000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
@@ -39,7 +39,6 @@ classdef SackState < handle
       function [model_found] = sack_iter(self)
             [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack_line(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_min_pints, SackState.line_num_iters);
             [fit_circle_start, fit_circle_rad, circle_fit_inliers, circle_fit_outliers] = sack_circle(self.outliers, SackState.circle_distance_thresh, SackState.circle_gap_threshold_degrees, SackState.circle_min_pints, SackState.circle_num_iters);
-            line_fit_inliers = []
             if(size(line_fit_inliers,1) == 0 && size(circle_fit_inliers,1) == 0)
                 % no suitable model left in data
                 model_found = 0;
