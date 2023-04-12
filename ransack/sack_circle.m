@@ -13,6 +13,7 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
         if(index_1 ~= index_2 && index_1 ~= index_3 && index_2 ~= index_3)
             % fit a circle to the 3 points by solving linear system
             % based on linearlization of circle equation compendium
+            % see writeup for the derivation of this linear system
             point_1 = scan_data(index_1, :);
             point_2 = scan_data(index_2, :);
             point_3 = scan_data(index_3, :);
@@ -26,19 +27,22 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
                     point_2(1).^2 + point_2(2).^2
                     point_3(1).^2 + point_3(2).^2
             ];
-            % see writeup for the derivation of this linear system
+            % sometimes we might get points that are close to co-linear
+            % which makes matlab not very happy. We can just filter these
+            % out by converting them to errors and catching them. 
+            % https://www.mathworks.com/help/matlab/ref/lastwarn.html
+            % https://undocumentedmatlab.com/articles/trapping-warnings-efficiently
             warning('error', 'MATLAB:singularMatrix');
             warning('error', 'matlab:nearlySingularMatrix');
             try
                w = A\b; 
             catch INV_ERROR
                 if (strcmp(INV_ERROR.identifier,'MATLAB:singularMatrix'))
-                    disp("error");
+                    disp("close to zero inverse, ignoring circle fit");
                     continue;
                 elseif (strcmp(INV_ERROR.identifier,'matlab:nearlySingularMatrix'))
-                    disp("error");
+                    disp("close to zero inverse, ignoring circle fit");
                     continue;
-         
                 end
             end
        
@@ -46,16 +50,15 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
             circle_start = [w(1); w(2)];
 
             loss_function = @(point) (sqrt(abs((point(1) - circle_start(1)).^2 + (point(2) - circle_start(2)).^2 - circle_rad.^2)));
-            accept_inlier = @(point) (loss_function(point) <= d);
+            accept_inlier = @(point) (loss_function(point) <= d && loss_function(point) <= 0.01*circle_rad);
 
             % inliers/outliers based on input threshold on orthogonal distance
             inliers = filter_by_row(scan_data, accept_inlier);
             outliers = filter_by_row(scan_data, negate_fun(accept_inlier));
             assert(size(inliers,1) + size(outliers,1) == size(scan_data,1));
     
-            % check for largest gap threshold
-            if(size(inliers, 1) >= min_points)
-                % save the best solution
+            % save the best solution
+            if(size(inliers,1) >= size(fit_inliers,1) && size(inliers, 1) >= min_points)
                 fit_circle_start = circle_start;
                 fit_circle_rad = circle_rad;
                 fit_inliers = inliers;

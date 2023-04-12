@@ -16,7 +16,7 @@ classdef SackState < handle
       % RANSACK LINE FIT --------------------------------------------------
 
       % RANSACK CIRCLE FIT --------------------------------------------------
-      circle_distance_thresh = 0.5; % inlier threshold for distance to circle model
+      circle_distance_thresh = 0.1; % inlier threshold for distance to circle model
       circle_min_pints = 5; % minimum point requirements for circle model
       circle_num_iters = 1000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
@@ -50,8 +50,9 @@ classdef SackState < handle
                
                % visualize output fit to plot if in debug mode
                if(self.debug_mode)
-                   scatter(line_fit_inliers(:,1), line_fit_inliers(:,2));
-                   plot([fit_seg_start(1), fit_seg_end(1)], [fit_seg_start(2), fit_seg_end(2)]);
+                   color = [rand,rand,rand];
+                   scatter(line_fit_inliers(:,1), line_fit_inliers(:,2), 'MarkerFaceColor', color, 'MarkerEdgeColor', color);
+                   plot([fit_seg_start(1), fit_seg_end(1)], [fit_seg_start(2), fit_seg_end(2)], 'Color', color);
                end
             else
                % circle has a better fit
@@ -61,8 +62,9 @@ classdef SackState < handle
 
                % visualize output fit to plot if in debug mode
                if(self.debug_mode)
-                   scatter(circle_fit_inliers(:,1), circle_fit_inliers(:,2));
-                   plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad);
+                   color = [rand,rand,rand];
+                   scatter(circle_fit_inliers(:,1), circle_fit_inliers(:,2), 'MarkerFaceColor', color, 'MarkerEdgeColor', color);
+                   plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad, color);
                end
             end
             % some model was found
