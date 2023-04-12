@@ -61,7 +61,7 @@ classdef SackState < handle
 
                % visualize output fit to plot if in debug mode
                if(self.debug_mode)
-                   scatter(circle_fit_outliers(:,1), circle_fit_outliers(:,2));
+                   scatter(circle_fit_inliers(:,1), circle_fit_inliers(:,2));
                    plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad);
                end
             end
