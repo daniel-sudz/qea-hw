@@ -57,12 +57,15 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
             outliers = filter_by_row(scan_data, negate_fun(accept_inlier));
             assert(size(inliers,1) + size(outliers,1) == size(scan_data,1));
     
-            % save the best solution
-            if(size(inliers,1) >= size(fit_inliers,1) && size(inliers, 1) >= min_points)
-                fit_circle_start = circle_start;
-                fit_circle_rad = circle_rad;
-                fit_inliers = inliers;
-                fit_outliers = outliers; 
+            % check angle gap
+            if(longest_circle_gap(circle_start, inliers) < deg2rad(20))
+                % save the best solution
+                if(size(inliers,1) >= size(fit_inliers,1) && size(inliers, 1) >= min_points)
+                    fit_circle_start = circle_start;
+                    fit_circle_rad = circle_rad;
+                    fit_inliers = inliers;
+                    fit_outliers = outliers; 
+                end
             end
         end
     end
