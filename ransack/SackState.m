@@ -70,6 +70,11 @@ classdef SackState < handle
       end
       % run iterative RANSACK with multiple models
       function [] = sack_multi(self)
+          % visualize output fit to plot if in debug mode
+          if(self.debug_mode)
+              figure(); hold on; axis equal;
+          end
+          % resolve iteratively
           while(sack_iter(self))
           end
       end
