@@ -22,7 +22,7 @@ function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack(scan_dat
             % check for largest gap threshold
             if(longest_gap(seg_start, seg_end, inliers) < g)
                 % save the best solution
-                if(size(inliers, 1) > size(fit_inliers, 1))
+                if(size(inliers, 1) > size(fit_inliers, 1) && size(inliers, 1) >= 5)
                     fit_seg_start = seg_start;
                     fit_seg_end = seg_end;
                     fit_inliers = inliers;

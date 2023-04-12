@@ -10,8 +10,8 @@ classdef SackState < handle
       debug_mode = 1; % whether to plot or not while iterating
 
       % RANSACK LINE FIT --------------------------------------------------
-      line_vertical_thresh = 0.2; % inlier threhold for vertical line fit
-      line_horizontal_gap_thresh = 0.2; % inlier threshold for line fit gap
+      line_vertical_thresh = 0.1; % inlier threhold for vertical line fit
+      line_horizontal_gap_thresh = 0.1; % inlier threshold for line fit gap
       line_num_iters = 1000; % how many times to sample for line fit
       % RANSACK LINE FIT --------------------------------------------------
 
