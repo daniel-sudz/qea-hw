@@ -12,13 +12,13 @@ classdef SackState < handle
       % RANSACK LINE FIT --------------------------------------------------
       line_vertical_thresh = 0.2; % inlier threhold for vertical line fit
       line_horizontal_gap_thresh = 0.2; % inlier threshold for line fit gap
-      line_num_iters = 10000; % how many times to sample for line fit
+      line_num_iters = 1000; % how many times to sample for line fit
       % RANSACK LINE FIT --------------------------------------------------
 
       % RANSACK CIRCLE FIT --------------------------------------------------
       circle_distance_thresh = 0.2; % inlier threshold for distance to circle model
       circle_min_pints = 5; % minimum point requirements for circle model
-      circle_num_iters = 10000; % how many times to sample for circle fit
+      circle_num_iters = 1000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
 
    end
@@ -34,9 +34,14 @@ classdef SackState < handle
       % constructor
       function obj = SackState()
       end
-      function [] = sack_iter(self)
+      function [model_found] = sack_iter(self)
             [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_num_iters);
             [fit_circle_start, fit_circle_rad, circle_fit_inliers, circle_fit_outliers] = sack_circle(self.outliers, SackState.circle_distance_thresh, SackState.circle_min_pints, SackState.circle_num_iters);
+            if(size(line_fit_inliers,1) == 0 && size(circle_fit_inliers,1) == 0)
+                % no suitable model left in data
+                model_found = 0;
+                return;
+            end
             if(size(line_fit_inliers,1) >= size(circle_fit_inliers,1))
                % line has a better fit
                self.fit_segs_start = [self.fit_segs_start; fit_seg_start(1) fit_seg_start(2)];
@@ -60,6 +65,13 @@ classdef SackState < handle
                    plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad);
                end
             end
+            % some model was found
+            model_found = 1;
+      end
+      % run iterative RANSACK with multiple models
+      function [] = sack_multi(self)
+          while(sack_iter(self))
+          end
       end
    end
 end

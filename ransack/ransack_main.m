@@ -9,24 +9,4 @@ load("playpensample.mat");
 state = SackState.FromPolar(r, theta);
 
 figure(); hold on; axis equal;
-state.sack_iter();
-state.sack_iter();
-
-
-
-
-%[fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_circle(scan_data, 0.2, 5, 10000)
-%scatter(fit_inliers(:,1), fit_inliers(:,2));
-%plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad);
-%[fit_segs_start, fit_segs_end] = multisack(scan_data, 0.15, 0.15, 10000);
-
-%for seg=1:size(fit_segs_start,1)
-%    plot([fit_segs_start(seg,1), fit_segs_end(seg,1)],[fit_segs_start(seg,2), fit_segs_end(seg,2)], 'red');
-%end
-%exportgraphics(gcf,'scan4-out.png','Resolution',1500)
-
-%plot_in = scatter(fit_inliers(:,1), fit_inliers(:,2), 'green');
-%plot_out = scatter(fit_outliers(:,1), fit_outliers(:,2), 'red');
-%plot_fit = plot([fit_seg_start(1), fit_seg_end(1)],[fit_seg_start(2), fit_seg_end(2)], 'black');
-%legend([plot_in, plot_out, plot_fit], sprintf("inliers=%d",size(fit_inliers,1)),  sprintf("outliers=%d",size(fit_outliers,1)), "fit line");
-
+state.sack_multi();
