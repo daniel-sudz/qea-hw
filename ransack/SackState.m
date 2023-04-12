@@ -35,7 +35,7 @@ classdef SackState < handle
       function obj = SackState()
       end
       function [model_found] = sack_iter(self)
-            [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_num_iters);
+            [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack_line(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_num_iters);
             [fit_circle_start, fit_circle_rad, circle_fit_inliers, circle_fit_outliers] = sack_circle(self.outliers, SackState.circle_distance_thresh, SackState.circle_min_pints, SackState.circle_num_iters);
             if(size(line_fit_inliers,1) == 0 && size(circle_fit_inliers,1) == 0)
                 % no suitable model left in data
