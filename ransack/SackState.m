@@ -16,7 +16,7 @@ classdef SackState < handle
       % RANSACK LINE FIT --------------------------------------------------
 
       % RANSACK CIRCLE FIT --------------------------------------------------
-      circle_distance_thresh = 0.2; % inlier threshold for distance to circle model
+      circle_distance_thresh = 0.5; % inlier threshold for distance to circle model
       circle_min_pints = 5; % minimum point requirements for circle model
       circle_num_iters = 1000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
