@@ -14,8 +14,9 @@ function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack(scan_dat
             seg_end = scan_data(index_2, :)';
             
             % inliers/outliers based on input threshold on orthogonal distance
-            inliers = filter_by_row(scan_data, @(point) ((project_point(seg_start, seg_end, point') <= d) && ~outside_segment(seg_start, seg_end, point')));
-            outliers = filter_by_row(scan_data,  @(point) ((project_point(seg_start, seg_end, point') > d) || outside_segment(seg_start, seg_end, point')));
+            accept_inlier = @(point) ((project_point(seg_start, seg_end, point') <= d) && ~outside_segment(seg_start, seg_end, point'));
+            inliers = filter_by_row(scan_data, accept_inlier);
+            outliers = filter_by_row(scan_data,  negate_fun(accept_inlier));
             assert(size(inliers,1) + size(outliers,1) == size(scan_data,1));
     
             % check for largest gap threshold
