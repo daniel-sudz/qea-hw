@@ -10,13 +10,16 @@ load("playpensample.mat");
 scan_data = [r .* cosd(theta), r .* sind(theta)];
 scan_data = filter_by_row(scan_data, @(x) (x(1)));
 
-figure(); hold on;
-[fit_segs_start, fit_segs_end] = multisack(scan_data, 0.15, 0.15, 10000);
+figure(); hold on; axis equal;
+[fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_circle(scan_data, 0.2, 10, 10000)
+scatter(fit_inliers(:,1), fit_inliers(:,2));
+plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad);
+%[fit_segs_start, fit_segs_end] = multisack(scan_data, 0.15, 0.15, 10000);
 
-for seg=1:size(fit_segs_start,1)
-    plot([fit_segs_start(seg,1), fit_segs_end(seg,1)],[fit_segs_start(seg,2), fit_segs_end(seg,2)], 'red');
-end
-exportgraphics(gcf,'scan4-out.png','Resolution',1500)
+%for seg=1:size(fit_segs_start,1)
+%    plot([fit_segs_start(seg,1), fit_segs_end(seg,1)],[fit_segs_start(seg,2), fit_segs_end(seg,2)], 'red');
+%end
+%exportgraphics(gcf,'scan4-out.png','Resolution',1500)
 
 %plot_in = scatter(fit_inliers(:,1), fit_inliers(:,2), 'green');
 %plot_out = scatter(fit_outliers(:,1), fit_outliers(:,2), 'red');
