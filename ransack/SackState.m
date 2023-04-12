@@ -7,6 +7,14 @@ classdef SackState < handle
       fit_circle_radii = [];
       debug_mode = 1; % whether to plot or not while iterating
    end
+   methods(Static)
+       % initialize ransack from polar coords
+       function obj = FromPolar(r, theta)
+           obj = SackState();
+           obj.outliers = [r .* cosd(theta), r .* sind(theta)];
+           obj.outliers = filter_by_row(obj.outliers, @(x) (x(1)));
+       end
+   end
    methods
       % constructor
       function obj = SackState()

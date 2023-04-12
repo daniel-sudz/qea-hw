@@ -6,11 +6,15 @@ project_point([1; 6 + 1], [2; 12 + 1], [4; -12]);
 
 % test our ransack function with data from homework
 load("playpensample.mat");
-%load("scan4.mat");
-scan_data = [r .* cosd(theta), r .* sind(theta)];
-scan_data = filter_by_row(scan_data, @(x) (x(1)));
+state = SackState.FromPolar(r, theta);
 
 figure(); hold on; axis equal;
+state.sack_iter();
+state.sack_iter();
+
+
+
+
 %[fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_circle(scan_data, 0.2, 5, 10000)
 %scatter(fit_inliers(:,1), fit_inliers(:,2));
 %plot_circle(fit_circle_start(1), fit_circle_start(2), fit_circle_rad);
