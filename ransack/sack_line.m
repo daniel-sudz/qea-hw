@@ -1,4 +1,4 @@
-function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack(scan_data, d, g, min_points, n)
+function [fit_seg_start, fit_seg_end, fit_inliers, fit_outliers] = sack_line(scan_data, d, g, min_points, n)
     % init return state format
     fit_seg_start = [-1; -1]; 
     fit_seg_end = [-1; -1]; 

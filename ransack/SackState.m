@@ -13,13 +13,13 @@ classdef SackState < handle
       line_vertical_thresh = 0.1; % inlier threhold for vertical line fit
       line_horizontal_gap_thresh = 0.1; % inlier threshold for line fit gap
       line_min_pints = 5; % minimum point requirements for line model
-      line_num_iters = 1000; % how many times to sample for line fit
+      line_num_iters = 10000; % how many times to sample for line fit
       % RANSACK LINE FIT --------------------------------------------------
 
       % RANSACK CIRCLE FIT --------------------------------------------------
       circle_distance_thresh = 0.1; % inlier threshold for distance to circle model
-      circle_min_pints = 5; % minimum point requirements for circle model
-      circle_num_iters = 1000; % how many times to sample for circle fit
+      circle_min_pints = 10; % minimum point requirements for circle model
+      circle_num_iters = 10000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
 
    end
@@ -43,6 +43,7 @@ classdef SackState < handle
                 model_found = 0;
                 return;
             end
+            line_fit_inliers = []
             if(size(line_fit_inliers,1) >= size(circle_fit_inliers,1))
                % line has a better fit
                self.fit_segs_start = [self.fit_segs_start; fit_seg_start(1) fit_seg_start(2)];

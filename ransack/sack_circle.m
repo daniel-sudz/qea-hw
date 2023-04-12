@@ -50,7 +50,7 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
             circle_start = [w(1); w(2)];
 
             loss_function = @(point) (sqrt(abs((point(1) - circle_start(1)).^2 + (point(2) - circle_start(2)).^2 - circle_rad.^2)));
-            accept_inlier = @(point) (loss_function(point) <= d && loss_function(point) <= 0.05*circle_rad && circle_rad < 0.5);
+            accept_inlier = @(point) (loss_function(point) <= d && loss_function(point) <= 0.1*circle_rad && circle_rad < 1);
 
             % inliers/outliers based on input threshold on orthogonal distance
             inliers = filter_by_row(scan_data, accept_inlier);
