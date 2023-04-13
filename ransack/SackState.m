@@ -40,7 +40,7 @@ classdef SackState < handle
    methods
       % constructor
       function self = SackState()
-         [x, y] = meshgrid(-3:0.01:3,-3:0.01:3);
+         [x, y] = meshgrid(-3:0.15:3,-3:0.15:3);
          self.mesh_grid_x = x;
          self.mesh_grid_y = y;
          self.mesh_grid_z = self.mesh_grid_x*0 + self.mesh_grid_y*0;
@@ -117,6 +117,9 @@ classdef SackState < handle
               % https://www.mathworks.com/matlabcentral/answers/30212-how-to-bring-a-plot-to-the-front-or-back-among-multiple-plots
               h = get(gca,'Children');
               set(gca,'Children',flip(h))
+
+              [Dx, Dy] = gradient(self.mesh_grid_z);
+              quiver(self.mesh_grid_x, self.mesh_grid_y, Dx, Dy)
           end
       end
    end
