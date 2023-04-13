@@ -87,14 +87,14 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to avoid
       function [] = add_source(self, x, y)
-            self.mesh_grid_z = self.mesh_grid_z + log(sqrt((self.mesh_grid_x - x).^2+ (self.mesh_grid_y - y).^2));
+            self.mesh_grid_z = self.mesh_grid_z + log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y)
-            self.mesh_grid_z = self.mesh_grid_z - log(sqrt((self.mesh_grid_x - x).^2+ (self.mesh_grid_y - y).^2));
+            self.mesh_grid_z = self.mesh_grid_z - log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
       end
       function [] = add_source_line(self, line_start, line_end)
-          resolution = 200;
+          resolution = ceil(norm(line_end - line_start) * 100);
           for iter=1:resolution
               intermediate = line_start + (((line_end - line_start) ./ resolution) * iter)
               add_source(self, intermediate(1), intermediate(2));
