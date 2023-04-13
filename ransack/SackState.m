@@ -9,6 +9,7 @@ classdef SackState < handle
       % contour plot tool
       mesh_grid_x = [];
       mesh_grid_y = [];
+      mesh_grid_z = [];
    end
    properties(Constant)
       debug_mode = 1; % whether to Wlot or not while iterating   
@@ -42,6 +43,8 @@ classdef SackState < handle
          [x, y] = meshgrid(-3:0.01:3,-3:0.01:3);
          self.mesh_grid_x = x;
          self.mesh_grid_y = y;
+         self.mesh_grid_z = self.mesh_grid_x*0 + self.mesh_grid_y*0;
+
 
       end
       function [model_found] = sack_iter(self)
@@ -62,6 +65,7 @@ classdef SackState < handle
                % visualize output fit to plot if in debug mode
                if(self.debug_mode)
                    color = [rand,rand,rand];
+                   add_source_line(self, fit_seg_start, fit_seg_end);
                    scatter(line_fit_inliers(:,1), line_fit_inliers(:,2), 'MarkerFaceColor', color, 'MarkerEdgeColor', color);
                    plot([fit_seg_start(1), fit_seg_end(1)], [fit_seg_start(2), fit_seg_end(2)], 'Color', color);
                end
@@ -81,6 +85,21 @@ classdef SackState < handle
             % some model was found
             model_found = 1;
       end
+      % marks a point in the gauntlet as a place to avoid
+      function [] = add_source(self, x, y)
+            self.mesh_grid_z = self.mesh_grid_z + log(sqrt((self.mesh_grid_x - x).^2+ (self.mesh_grid_y - y).^2));
+      end
+      % marks a point in the gauntlet as a place to seek
+      function [] = add_sink(self, x, y)
+            self.mesh_grid_z = self.mesh_grid_z - log(sqrt((self.mesh_grid_x - x).^2+ (self.mesh_grid_y - y).^2));
+      end
+      function [] = add_source_line(self, line_start, line_end)
+          resolution = 200;
+          for iter=1:resolution
+              intermediate = line_start + (((line_end - line_start) ./ resolution) * iter)
+              add_source(self, intermediate(1), intermediate(2));
+          end
+      end
       % run iterative RANSACK with multiple models
       function [] = sack_multi(self)
           % visualize output fit to plot if in debug mode
@@ -92,8 +111,7 @@ classdef SackState < handle
           end
           % plot out contour if in debug mode
           if(self.debug_mode)
-              v = log(sqrt(self.mesh_grid_x.^2+ self.mesh_grid_y.^2));
-              contourf(self.mesh_grid_x,self.mesh_grid_y, v, 100, 'edgecolor','none');
+              contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
               colormap('hot');
               % send contour plot to background by flipping plot elements
               % https://www.mathworks.com/matlabcentral/answers/30212-how-to-bring-a-plot-to-the-front-or-back-among-multiple-plots
