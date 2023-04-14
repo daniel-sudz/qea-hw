@@ -7,9 +7,16 @@ classdef SackState < handle
       fit_circle_radii = [];
       
       % contour plot tool
+      mesh_grid_min = -3; 
+      mesh_grid_max = 3; 
+      mesh_grid_step = 0.05;
       mesh_grid_x = [];
       mesh_grid_y = [];
       mesh_grid_z = [];
+
+      % robot position
+      x = 0; 
+      y = 0; 
    end
    properties(Constant)
       debug_mode = 1; % whether to Wlot or not while iterating   
@@ -40,7 +47,7 @@ classdef SackState < handle
    methods
       % constructor
       function self = SackState()
-         [x, y] = meshgrid(-3:0.15:3,-3:0.15:3);
+         [x, y] = meshgrid(self.mesh_grid_min:self.mesh_grid_step:self.mesh_grid_max,self.mesh_grid_min:self.mesh_grid_step:self.mesh_grid_max);
          self.mesh_grid_x = x;
          self.mesh_grid_y = y;
          self.mesh_grid_z = self.mesh_grid_x*0 + self.mesh_grid_y*0;
@@ -91,13 +98,41 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y)
-            self.mesh_grid_z = self.mesh_grid_z - log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
+            self.mesh_grid_z = self.mesh_grid_z - 100*log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
       end
       function [] = add_source_line(self, line_start, line_end)
           resolution = ceil(norm(line_end - line_start) * 100);
           for iter=1:resolution
               intermediate = line_start + (((line_end - line_start) ./ resolution) * iter)
               add_source(self, intermediate(1), intermediate(2));
+          end
+      end
+      function [] = move_neato(self) 
+          if(self.x > 2.5 || self.x < -2.5 || self.y > 2.5 || self.y < -2.5)
+              return;
+          end
+         [Dx, Dy] = gradient(self.mesh_grid_z);
+
+         mesh_grid_x_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.x / self.mesh_grid_step))
+         mesh_grid_y_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.y / self.mesh_grid_step))
+         
+         move_direction = [Dx(mesh_grid_y_index, mesh_grid_x_index); Dy(mesh_grid_y_index, mesh_grid_x_index)]; 
+         move_direction = move_direction ./ norm(move_direction);
+         move_direction = move_direction ./ 100;
+
+         % move the actual neato
+
+         % stop moving the neato
+
+         % update our position where we think we are
+         self.x = self.x + move_direction(1);
+         self.y = self.y + move_direction(2);
+
+      end
+      function [] = goal(self)
+          for iter=1:500
+              scatter([self.x], [self.y], 'magenta');
+              move_neato(self);
           end
       end
       % run iterative RANSACK with multiple models
@@ -111,6 +146,11 @@ classdef SackState < handle
           end
           % plot out contour if in debug mode
           if(self.debug_mode)
+              add_sink(self,-2,2);
+              goal(self);
+
+
+
               contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
               colormap('hot');
               % send contour plot to background by flipping plot elements
@@ -120,7 +160,9 @@ classdef SackState < handle
 
               [Dx, Dy] = gradient(self.mesh_grid_z);
               quiver(self.mesh_grid_x, self.mesh_grid_y, Dx, Dy)
+
           end
       end
+
    end
 end
