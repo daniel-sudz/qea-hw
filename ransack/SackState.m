@@ -22,17 +22,17 @@ classdef SackState < handle
       debug_mode = 1; % whether to Wlot or not while iterating   
 
       % RANSACK LINE FIT --------------------------------------------------
-      line_vertical_thresh = 0.1; % inlier threhold for vertical line fit
-      line_horizontal_gap_thresh = 0.1; % inlier threshold for line fit gap
-      line_min_pints = 5; % minimum point requirements for line model
+      line_vertical_thresh = 0.05; % inlier threhold for vertical line fit
+      line_horizontal_gap_thresh = 0.05; % inlier threshold for line fit gap
+      line_min_pints = 10; % minimum point requirements for line model
       line_num_iters = 1000; % how many times to sample for line fit
       % RANSACK LINE FIT --------------------------------------------------
 
       % RANSACK CIRCLE FIT --------------------------------------------------
-      circle_distance_thresh = 0.1; % inlier threshold for distance to circle model
+      circle_distance_thresh = 0.05; % inlier threshold for distance to circle model
       circle_min_pints = 5; % minimum point requirements for circle model
-      circle_gap_threshold_degrees = 20; % max gap threshold of fit in degrees
-      circle_num_iters = 1000; % how many times to sample for circle fit
+      circle_gap_threshold_degrees = 40; % max gap threshold of fit in degrees
+      circle_num_iters = 10000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
 
    end
