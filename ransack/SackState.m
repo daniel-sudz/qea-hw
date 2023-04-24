@@ -56,13 +56,10 @@ classdef SackState < handle
          self.mesh_grid_x = x;
          self.mesh_grid_y = y;
          self.mesh_grid_z = self.mesh_grid_x*0 + self.mesh_grid_y*0;
-
-
       end
       function [model_found] = sack_iter(self)
             [fit_seg_start, fit_seg_end, line_fit_inliers, line_fit_outliers] = sack_line(self.outliers, SackState.line_vertical_thresh, SackState.line_horizontal_gap_thresh, SackState.line_min_pints, SackState.line_num_iters);
             [fit_circle_start, fit_circle_rad, circle_fit_inliers, circle_fit_outliers] = sack_circle(self.outliers, SackState.circle_distance_thresh, SackState.circle_gap_threshold_degrees, SackState.circle_min_pints, SackState.circle_num_iters);
-            circle_fit_inliers =[];
             if(size(line_fit_inliers,1) == 0 && size(circle_fit_inliers,1) == 0)
                 % no suitable model left in data
                 model_found = 0;
