@@ -43,6 +43,11 @@ classdef SackState < handle
            obj.outliers = [r .* cosd(theta), r .* sind(theta)];
            obj.outliers = filter_by_row(obj.outliers, @(x) (x(1)));
        end
+       % initialize ransack from global (x, y) cords
+       function obj = FromGlobal(x, y)
+           obj = SackState();
+           obj.outliers = [x, y];
+       end
    end
    methods
       % constructor
@@ -160,7 +165,7 @@ classdef SackState < handle
           % plot out contour if in debug mode
           if(self.debug_mode)
               add_sink(self,-2,2);
-              goal(self);
+              %goal(self);
 
               contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
               colormap('hot');

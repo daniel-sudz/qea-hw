@@ -1,6 +1,5 @@
 clear all; close all;
 
-% test our ransack function with data from homework
-load("playpensample.mat");
-state = SackState.FromPolar(r, theta);
+[map_x, map_y] = get_map();
+state = SackState.FromGlobal(map_x, map_y);
 state.sack_multi();
