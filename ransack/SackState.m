@@ -108,17 +108,30 @@ classdef SackState < handle
           end
       end
       function [] = move_neato(self) 
-          if(self.x > 2.5 || self.x < -2.5 || self.y > 2.5 || self.y < -2.5)
-              return;
-          end
          [Dx, Dy] = gradient(self.mesh_grid_z);
 
-         mesh_grid_x_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.x / self.mesh_grid_step))
-         mesh_grid_y_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.y / self.mesh_grid_step))
+         mesh_grid_x_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.x / self.mesh_grid_step));
+         mesh_grid_y_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.y / self.mesh_grid_step));
+
+         % prevent from going out of bounds
+         if(mesh_grid_x_index > size(self.mesh_grid_z,1))
+             mesh_grid_x_index = min(mesh_grid_x_index, size(self.mesh_grid_z,1) - 10);
+         end
+         if(mesh_grid_y_index > size(self.mesh_grid_z,1))
+             mesh_grid_y_index = min(mesh_grid_y_index, size(self.mesh_grid_z,1) - 10);
+         end
+
+         mesh_grid_x_index
+         mesh_grid_y_index
+
+         if(isnan(mesh_grid_x_index) || isnan(mesh_grid_y_index))
+             disp("foo");
+         end
          
+
          move_direction = [Dx(mesh_grid_y_index, mesh_grid_x_index); Dy(mesh_grid_y_index, mesh_grid_x_index)]; 
          move_direction = move_direction ./ norm(move_direction);
-         move_direction = move_direction ./ 100;
+         move_direction = move_direction ./ 1;
 
          % move the actual neato
 
@@ -148,8 +161,6 @@ classdef SackState < handle
           if(self.debug_mode)
               add_sink(self,-2,2);
               goal(self);
-
-
 
               contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
               colormap('hot');
