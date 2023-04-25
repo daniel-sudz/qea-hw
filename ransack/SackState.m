@@ -10,7 +10,7 @@ classdef SackState < handle
       % contour plot tool
       mesh_grid_min = -1.5; 
       mesh_grid_max = 1.5; 
-      mesh_grid_step = 0.05;
+      mesh_grid_step = 0.01;
       mesh_grid_x = [];
       mesh_grid_y = [];
       mesh_grid_z = [];
@@ -24,7 +24,7 @@ classdef SackState < handle
    properties(Constant)
       debug_mode = 1; % whether to plot or not while iterating  
       color_map = 1;
-      quiver_map = 0;
+      quiver_map = 1;
       theoretical_map = 1;
 
       % RANSACK LINE FIT --------------------------------------------------
@@ -109,14 +109,14 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to avoid
       function [] = add_source(self, x, y)
-            self.mesh_grid_z = self.mesh_grid_z + log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
+            self.mesh_grid_z = self.mesh_grid_z + 5*log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-            for pheta=0:0.1:2*pi
+            for pheta=0:0.01:2*pi
                 loc_x = x + pheta*cos(pheta)*rad;
                 loc_y = y + pheta*sin(pheta)*rad;
-                self.mesh_grid_z = self.mesh_grid_z - 5*log(sqrt(((self.mesh_grid_x) - loc_x).^2+ ((self.mesh_grid_y) - loc_y).^2));
+                self.mesh_grid_z = self.mesh_grid_z - 1*log(sqrt(((self.mesh_grid_x) - loc_x).^2+ ((self.mesh_grid_y) - loc_y).^2));
             end
       end
       function [] = add_source_line(self, line_start, line_end)
@@ -143,7 +143,7 @@ classdef SackState < handle
          move_direction = move_direction ./ norm(move_direction);
          move_direction = move_direction ./ 5;
 
-         while(self.x + move_direction(1) > 1.2 || self.x + move_direction(1) < -1 || self.y + move_direction(2) < -1)
+         while(self.x + move_direction(1) > 1.5 || self.x + move_direction(1) < -1.5 || self.y + move_direction(2) < -1.5)
             move_direction = move_direction * 0.9;
          end
 
@@ -157,12 +157,12 @@ classdef SackState < handle
 
       end
       function [] = goal(self)
-          for iter=1:7
+          for iter=1:11
               self.commands = [self.commands; self.x self.y];
               move_neato(self);
           end
           if(self.theoretical_map)
-              plt = plot(self.commands(:,1), self.commands(:,2), 'white', 'LineWidth', 10);
+              plt = plot(self.commands(:,1), self.commands(:,2), 'black', 'LineWidth', 10);
               legend(plt, "Theoretical Gradient Descent");
           end
       end
@@ -180,17 +180,19 @@ classdef SackState < handle
           if(self.debug_mode)
               scatter(self.outliers(:,1), self.outliers(:,2))
               add_sink(self,1.05,-0.45, 0.135);
+              add_sink(self,0,0,0.1);
               goal(self);
               
               if(self.color_map)
-                  contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
-                  colormap('hot');
+                  %surf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z);
+                  %contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
+                  %colormap('hot');
               end
 
               % send contour plot to background by flipping plot elements
               % https://www.mathworks.com/matlabcentral/answers/30212-how-to-bring-a-plot-to-the-front-or-back-among-multiple-plots
-              h = get(gca,'Children');
-              set(gca,'Children',flip(h))
+              %h = get(gca,'Children');
+              %set(gca,'Children',flip(h))
 
               if(self.quiver_map)
                   [Dx, Dy] = gradient(self.mesh_grid_z);
