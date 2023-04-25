@@ -1,4 +1,4 @@
-function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_circle(scan_data, d, gap_threshold, min_points, n)
+function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_circle(scan_data, d, min_points, n)
     % init return state format
     fit_circle_start = [-1; -1]; 
     fit_circle_rad = -1;
@@ -49,8 +49,12 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
             circle_rad = sqrt(w(1).^2 + w(2).^2 - w(3));
             circle_start = [w(1); w(2)];
 
+            if(circle_start(1) < 1 || circle_start(1) > 1.1 || circle_start(2) < -0.5 || circle_start(2) > -0.4)
+                continue;
+            end
+
             loss_function = @(point) (sqrt(abs((point(1) - circle_start(1)).^2 + (point(2) - circle_start(2)).^2 - circle_rad.^2)));
-            accept_radius = @()(abs(circle_rad - 0.1305) <= 0.025);
+            accept_radius = @()(abs(circle_rad - 0.1305) <= 0.02);
             accept_inlier = @(point) (loss_function(point) <= d && accept_radius());
 
             % inliers/outliers based on input threshold on orthogonal distance
@@ -58,16 +62,14 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
             outliers = filter_by_row(scan_data, negate_fun(accept_inlier));
             assert(size(inliers,1) + size(outliers,1) == size(scan_data,1));
     
-            % check angle gap
-            if(longest_circle_gap(circle_start, inliers) < deg2rad(gap_threshold))
-                % save the best solution
-                if(size(inliers,1) >= size(fit_inliers,1) && size(inliers, 1) >= min_points)
-                    fit_circle_start = circle_start;
-                    fit_circle_rad = circle_rad;
-                    fit_inliers = inliers;
-                    fit_outliers = outliers; 
-                end
+            % save the best solution
+            if(size(inliers,1) >= size(fit_inliers,1) && size(inliers, 1) >= min_points)
+                fit_circle_start = circle_start;
+                fit_circle_rad = circle_rad;
+                fit_inliers = inliers;
+                fit_outliers = outliers; 
             end
+           
         end
     end
 end
