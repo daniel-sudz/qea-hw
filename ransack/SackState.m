@@ -17,15 +17,15 @@ classdef SackState < handle
 
 
       % robot position
-      x = 0; 
-      y = 0; 
+      x = -.84; 
+      y = -.93; 
       commands = [];
    end
    properties(Constant)
       debug_mode = 1; % whether to plot or not while iterating  
       color_map = 1;
-      quiver_map = 1;
-      theoretical_map = 0;
+      quiver_map = 0;
+      theoretical_map = 1;
 
       % RANSACK LINE FIT --------------------------------------------------
       line_vertical_thresh = 0.1; % inlier threhold for vertical line fit
@@ -162,7 +162,7 @@ classdef SackState < handle
               move_neato(self);
           end
           if(self.theoretical_map)
-              plt = plot(commands(:,1), commands(:,2), 'white', 'LineWidth', 10);
+              plt = plot(self.commands(:,1), self.commands(:,2), 'white', 'LineWidth', 10);
               legend(plt, "Theoretical Gradient Descent");
           end
       end
