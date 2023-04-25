@@ -25,14 +25,14 @@ classdef SackState < handle
       line_vertical_thresh = 0.05; % inlier threhold for vertical line fit
       line_horizontal_gap_thresh = 0.05; % inlier threshold for line fit gap
       line_min_pints = 10; % minimum point requirements for line model
-      line_num_iters = 1000; % how many times to sample for line fit
+      line_num_iters = 500; % how many times to sample for line fit
       % RANSACK LINE FIT --------------------------------------------------
 
       % RANSACK CIRCLE FIT --------------------------------------------------
       circle_distance_thresh = 0.05; % inlier threshold for distance to circle model
       circle_min_pints = 5; % minimum point requirements for circle model
       circle_gap_threshold_degrees = 40; % max gap threshold of fit in degrees
-      circle_num_iters = 10000; % how many times to sample for circle fit
+      circle_num_iters = 500; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
 
    end
