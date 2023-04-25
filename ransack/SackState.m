@@ -19,7 +19,7 @@ classdef SackState < handle
       y = 0; 
    end
    properties(Constant)
-      debug_mode = 1; % whether to Wlot or not while iterating   
+      debug_mode = 1; % whether to plot or not while iterating   
 
       % RANSACK LINE FIT --------------------------------------------------
       line_vertical_thresh = 0.05; % inlier threhold for vertical line fit
@@ -32,7 +32,7 @@ classdef SackState < handle
       circle_distance_thresh = 0.05; % inlier threshold for distance to circle model
       circle_min_pints = 5; % minimum point requirements for circle model
       circle_gap_threshold_degrees = 40; % max gap threshold of fit in degrees
-      circle_num_iters = 500; % how many times to sample for circle fit
+      circle_num_iters = 10000; % how many times to sample for circle fit
       % RANSACK CIRCLE FIT --------------------------------------------------
 
    end
@@ -105,7 +105,7 @@ classdef SackState < handle
       function [] = add_source_line(self, line_start, line_end)
           resolution = ceil(norm(line_end - line_start) * 100);
           for iter=1:resolution
-              intermediate = line_start + (((line_end - line_start) ./ resolution) * iter)
+              intermediate = line_start + (((line_end - line_start) ./ resolution) * iter);
               add_source(self, intermediate(1), intermediate(2));
           end
       end
@@ -158,10 +158,11 @@ classdef SackState < handle
           end
           % resolve iteratively
           while(sack_iter(self))
+              size(self.outliers)
           end
           % plot out contour if in debug mode
           if(self.debug_mode)
-              add_sink(self,-2,2);
+              %add_sink(self,-2,2);
               %goal(self);
 
               contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');

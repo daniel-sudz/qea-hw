@@ -38,10 +38,10 @@ function [fit_circle_start, fit_circle_rad, fit_inliers, fit_outliers] = sack_ci
                w = A\b; 
             catch INV_ERROR
                 if (strcmp(INV_ERROR.identifier,'MATLAB:singularMatrix'))
-                    disp("close to zero inverse, ignoring circle fit");
+                    %disp("close to zero inverse, ignoring circle fit");
                     continue;
                 elseif (strcmp(INV_ERROR.identifier,'matlab:nearlySingularMatrix'))
-                    disp("close to zero inverse, ignoring circle fit");
+                    %disp("close to zero inverse, ignoring circle fit");
                     continue;
                 end
             end
