@@ -1,7 +1,7 @@
 % moves between two points by first rotating and then moving in a straight line
 function [target_angle, cord2] = move_point(cur_angle, cord1, cord2, sensors, vels)
-    MAX_SPEED_ROTATE = 0.1;
-    MAX_SPEED_MOVE = 0.3;
+    MAX_SPEED_ROTATE = 0.05;
+    MAX_SPEED_MOVE = 0.1;
     WHEEL_BASE = 0.245; 
 
     % rotate to angle 
@@ -9,7 +9,6 @@ function [target_angle, cord2] = move_point(cur_angle, cord1, cord2, sensors, ve
     if(cord2(1) < cord1(1))
         target_angle = target_angle + pi;
     end
-    target_angle * (180 / pi)
     omega_vel = (MAX_SPEED_ROTATE * 2) / WHEEL_BASE;
     rotation_time = abs(cur_angle - target_angle) / omega_vel;
 

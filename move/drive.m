@@ -1,10 +1,6 @@
 clear all; close all;
 
-[sensors,vels]= neatoSim(-2, 0, deg2rad(0), 1); % create the simulator
-pause(15); % give the simulator a few seconds to load
-
 points = [
-    0 0;
    -0.8400   -0.9300
    -0.7515   -0.8089
    -0.6585   -0.6912
@@ -24,16 +20,10 @@ points = [
     0.7422   -0.2528
     0.8852   -0.2979
     1.0282   -0.3431
-    0.8852   -0.2979
-    1.0282   -0.3431
-    0.8852   -0.2979
-    1.0282   -0.3431
-    0.8852   -0.2979
-    1.0282   -0.3431
-    0.8852   -0.2978
-    1.0283   -0.3431
-    0.8853   -0.2978
-    1.0283   -0.3431
-    0.8853   -0.2978
     ];
-%move_many(points, sensors, vels);
+figure()
+scatter(points(:,1), points(:,2));
+
+[sensors,vels]= neatoSim(-0.8400, -0.9300, deg2rad(90), 1); % create the simulator
+pause(15); % give the simulator a few seconds to load
+move_many(points, sensors, vels);
