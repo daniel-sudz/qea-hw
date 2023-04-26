@@ -61,6 +61,9 @@ classdef SackState < handle
             self.symb_x = symb_x;
             self.symb_y = symb_y;
       end
+      function [res] = logn(self,x,n)
+          res = log(x)/log(n);
+      end
       function [model_found] = sack_iter(self)
             %{
             while(self.circle_found ~= 1)
@@ -108,18 +111,18 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-        scalar = 1000;
+        scalar = 100;
         syms u; 
         pos = [x + rad*cos(2*pi*u); y + rad*sin(2*pi*u)];
-        expr = -1*scalar*log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
+        expr = scalar*((sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 )) .^ (-4));
         res = int(expr, u, [0,1], 'Hold', true);
         self.symb_f = self.symb_f + res;
       end
       function [] = add_source_line(self, line_start, line_end)
-          scalar = 10;
+          scalar = 0.1;
           syms u; 
           pos = line_start + (line_end - line_start) .* u;
-          expr = scalar*log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
+          expr = -1*scalar*((sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 )) .^ (-4));
           res = int(expr, u, [0,1], 'Hold', true);
           self.symb_f = self.symb_f + res;
       end
@@ -131,7 +134,7 @@ classdef SackState < handle
 
          dir = [dx(self.x,self.y) dy(self.x,self.y)];
          dir = dir ./ norm(dir);
-         dir = dir / 20;
+         dir = dir / 100;
 
          % move the actual neato
 
@@ -143,7 +146,7 @@ classdef SackState < handle
 
       end
       function [] = goal(self)
-          for iter=1:100
+          for iter=1:1000
               self.commands = [self.commands; self.x self.y];
               move_neato(self);
           end
@@ -166,6 +169,7 @@ classdef SackState < handle
           if(self.debug_mode)
               scatter(self.outliers(:,1), self.outliers(:,2))
               add_sink(self,1.05,-0.45, 0.135);
+              add_source_line(self,[0.235; -0.55], [0.50; -0.87]);
               goal(self);
 
 
@@ -173,7 +177,7 @@ classdef SackState < handle
               %Z = 
               
               if(self.color_map)
-                  fcontour(matlabFunction(self.symb_f), [-1.5 1.5], 'Fill','on', 'LevelStep', 0.3)
+                  fcontour(matlabFunction(self.symb_f), [-1.5 1.5], 'Fill','on')
                   %surf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z);
                   %contourf(X,X,Z, 1000, 'edgecolor','none', 'Fill','on');
                   %colormap('hot');
