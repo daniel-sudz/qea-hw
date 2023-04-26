@@ -128,7 +128,7 @@ classdef SackState < handle
       end
       function [] = bias_center(self)
           scalar = 10;
-          expr = -1*scalar*log((sqrt( (self.symb_x).^2 +  (self.symb_y).^2 )));
+          expr = -1*scalar((sqrt( (self.symb_x).^2 +  (self.symb_y).^2 )));
           self.symb_f = self.symb_f + expr;
       end
       function [] = move_neato(self)
