@@ -116,9 +116,10 @@ classdef SackState < handle
         self.symb_f = self.symb_f + res;
       end
       function [] = add_source_line(self, line_start, line_end)
+          scalar = 10;
           syms u; 
           pos = line_start + (line_end - line_start) .* u;
-          expr = log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
+          expr = scalar*log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
           res = int(expr, u, [0,1], 'Hold', true);
           self.symb_f = self.symb_f + res;
       end
@@ -166,11 +167,15 @@ classdef SackState < handle
               scatter(self.outliers(:,1), self.outliers(:,2))
               add_sink(self,1.05,-0.45, 0.135);
               goal(self);
+
+
+              %[X,Y] = meshgrid(-1.5:0.01:1.5,-1.5:0.01:1.5);
+              %Z = 
               
               if(self.color_map)
-                  fcontour(matlabFunction(self.symb_f), [-1.5, 1.5])
+                  fcontour(matlabFunction(self.symb_f), [-1.5 1.5], 'Fill','on', 'LevelStep', 0.3)
                   %surf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z);
-                  %contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
+                  %contourf(X,X,Z, 1000, 'edgecolor','none', 'Fill','on');
                   %colormap('hot');
               end
 
