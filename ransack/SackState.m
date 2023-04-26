@@ -111,7 +111,7 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-        scalar = 100;
+        scalar = 50;
         syms u; 
         pos = [x + rad*cos(2*pi*u); y + rad*sin(2*pi*u)];
         expr = scalar*((sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 )) .^ (-4));
@@ -126,15 +126,23 @@ classdef SackState < handle
           res = int(expr, u, [0,1], 'Hold', true);
           self.symb_f = self.symb_f + res;
       end
+      function [] = bias_center(self)
+          scalar = 10;
+          expr = -1*scalar*log((sqrt( (self.symb_x).^2 +  (self.symb_y).^2 )));
+          self.symb_f = self.symb_f + expr;
+      end
       function [] = move_neato(self)
          eps = 0.000001;
          num_f = matlabFunction(self.symb_f);
          dx = @(x_,y_) ((num_f(x_+eps,y_) - num_f(x_,y_))/ eps);
          dy = @(x_,y_) ((num_f(x_,y_+eps) - num_f(x_,y_))/ eps);
 
+         step = 0.1;
+
          dir = [dx(self.x,self.y) dy(self.x,self.y)];
          dir = dir ./ norm(dir);
-         dir = dir / 100;
+         dir = dir * step;
+
 
          % move the actual neato
 
@@ -169,6 +177,7 @@ classdef SackState < handle
           if(self.debug_mode)
               scatter(self.outliers(:,1), self.outliers(:,2))
               add_sink(self,1.05,-0.45, 0.135);
+              bias_center(self);
               add_source_line(self,[0.235; -0.55], [0.50; -0.87]);
               goal(self);
 
