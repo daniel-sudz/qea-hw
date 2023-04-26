@@ -111,7 +111,7 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-        scalar = 50;
+        scalar = 1000;
         syms u; 
         pos = [x + rad*cos(2*pi*u); y + rad*sin(2*pi*u)];
         expr = scalar*((sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 )) .^ (-4));
@@ -127,7 +127,7 @@ classdef SackState < handle
           self.symb_f = self.symb_f + res;
       end
       function [] = bias_center(self)
-          scalar = 70;
+          scalar = 1500;
           expr = -1*scalar*(sqrt(self.symb_x.^2 +  self.symb_y.^2));
           self.symb_f = self.symb_f + expr;
       end
@@ -137,7 +137,7 @@ classdef SackState < handle
          dx = @(x_,y_) ((num_f(x_+eps,y_) - num_f(x_,y_))/ eps);
          dy = @(x_,y_) ((num_f(x_,y_+eps) - num_f(x_,y_))/ eps);
 
-         step = 0.3;
+         step = 0.15;
 
          dir = [dx(self.x,self.y) dy(self.x,self.y)];
          dir = dir ./ norm(dir);
@@ -178,9 +178,9 @@ classdef SackState < handle
               scatter(self.outliers(:,1), self.outliers(:,2))
               add_sink(self,1.05,-0.45, 0.135);
               bias_center(self);
-              add_source_line(self,[0.235; -0.55], [0.50; -0.87]);
+              add_source_line(self,[0.235; -0.55], [0.50; -0.87]); % our scans are bad
+              add_source_line(self,[-0.09; -0.53], [-0.27; -0.31]); % our scans are bad
               goal(self);
-
 
               %[X,Y] = meshgrid(-1.5:0.01:1.5,-1.5:0.01:1.5);
               %Z = 
