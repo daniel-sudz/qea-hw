@@ -176,7 +176,7 @@ classdef SackState < handle
           % plot out contour if in debug mode
           if(self.debug_mode)
               scatter(self.outliers(:,1), self.outliers(:,2))
-              add_sink(self,1.05,-0.40, 0.135);
+              add_sink(self,1.05,-0.35, 0.135);
               bias_center(self);
               add_source_line(self,[0.235; -0.55], [0.50; -0.87]); % our scans are bad
               add_source_line(self,[-0.09; -0.53], [-0.27; -0.31]); % our scans are bad
@@ -188,7 +188,8 @@ classdef SackState < handle
               %Z = 
               
               if(self.color_map)
-                  fcontour(matlabFunction(self.symb_f), [-1.5 1.5], 'Fill','on')
+                  fcontour(matlabFunction(self.symb_f), [-1.5 1.5], 'Fill','on');
+                  colormap('turbo');
                   %surf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z);
                   %contourf(X,X,Z, 1000, 'edgecolor','none', 'Fill','on');
                   %colormap('hot');
