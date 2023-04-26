@@ -122,12 +122,12 @@ classdef SackState < handle
           scalar = 0.1;
           syms u; 
           pos = line_start + (line_end - line_start) .* u;
-          expr = -1*scalar*((sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 )) .^ (-4));
+          expr = -1*scalar*((sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 )) .^ (-2));
           res = int(expr, u, [0,1], 'Hold', true);
           self.symb_f = self.symb_f + res;
       end
       function [] = bias_center(self)
-          scalar = 10;
+          scalar = 40;
           expr = -1*scalar*(sqrt(self.symb_x.^2 +  self.symb_y.^2));
           self.symb_f = self.symb_f + expr;
       end
@@ -137,7 +137,7 @@ classdef SackState < handle
          dx = @(x_,y_) ((num_f(x_+eps,y_) - num_f(x_,y_))/ eps);
          dy = @(x_,y_) ((num_f(x_,y_+eps) - num_f(x_,y_))/ eps);
 
-         step = 0.1;
+         step = 0.3;
 
          dir = [dx(self.x,self.y) dy(self.x,self.y)];
          dir = dir ./ norm(dir);
