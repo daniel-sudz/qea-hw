@@ -18,8 +18,7 @@ classdef SackState < handle
       symb_x = -1;
       symb_y = -1; 
       symb_f = 0;
-      symb_f_dx = 0;
-      symb_f_dy = 0;
+      num_f = [];
 
    end
    properties(Constant)
@@ -109,27 +108,27 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-
+        scalar = 10;
+        syms u; 
+        pos = [x + rad*2*pi*cos(u); y + rad*2*pi*sin(u)];
+        expr = -1*scalar*log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
+        res = int(expr, u, [0,1], 'Hold', true);
+        self.symb_f = self.symb_f + res;
       end
       function [] = add_source_line(self, line_start, line_end)
           syms u; 
           pos = line_start + (line_end - line_start) .* u;
           expr = log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
           res = int(expr, u, [0,1], 'Hold', true);
-          
           self.symb_f = self.symb_f + res;
-          
-          % update derivitives
-          dx = diff(res, self.symb_x);
-          dy = diff(res, self.symb_y);
-          self.symb_f_dx = self.symb_f_dx + dx;
-          self.symb_f_dy = self.symb_f_dy + dy;
       end
-      function [] = move_neato(self) 
-         dx = subs(self.symb_f_dx, self.symb_x, self.x);
-         dy = subs(self.symb_f_dy, self.symb_y, self.y);
+      function [] = move_neato(self)
+         eps = 0.000001;
+         num_f = matlabFunction(self.symb_f);
+         dx = @(x_,y_) ((num_f(x_+eps,y_) - num_f(x_,y_))/ eps);
+         dy = @(x_,y_) ((num_f(x_,y_+eps) - num_f(x_,y_))/ eps);
 
-         dir = [double(dx) double(dy)];
+         dir = [dx(self.x,self.y) dy(self.x,self.y)];
          dir = dir ./ norm(dir);
          dir = dir / 5;
 
@@ -166,10 +165,10 @@ classdef SackState < handle
           if(self.debug_mode)
               scatter(self.outliers(:,1), self.outliers(:,2))
               add_sink(self,1.05,-0.45, 0.135);
-              add_sink(self,0,0,0.1);
               goal(self);
               
               if(self.color_map)
+                  fcontour(matlabFunction(self.symb_f), [-1.5, 1.5])
                   %surf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z);
                   %contourf(self.mesh_grid_x,self.mesh_grid_y, self.mesh_grid_z, 1000, 'edgecolor','none');
                   %colormap('hot');
@@ -177,12 +176,12 @@ classdef SackState < handle
 
               % send contour plot to background by flipping plot elements
               % https://www.mathworks.com/matlabcentral/answers/30212-how-to-bring-a-plot-to-the-front-or-back-among-multiple-plots
-              %h = get(gca,'Children');
-              %set(gca,'Children',flip(h))
+              h = get(gca,'Children');
+              set(gca,'Children',flip(h))
 
               if(self.quiver_map)
-                  [Dx, Dy] = gradient(self.mesh_grid_z);
-                  quiver(self.mesh_grid_x, self.mesh_grid_y, Dx, Dy)
+                  %[Dx, Dy] = gradient(self.mesh_grid_z);
+                  %quiver(self.mesh_grid_x, self.mesh_grid_y, Dx, Dy)
               end
               
 
