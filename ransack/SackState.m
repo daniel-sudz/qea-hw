@@ -128,7 +128,7 @@ classdef SackState < handle
       end
       function [] = bias_center(self)
           scalar = 1500;
-          expr = -1*scalar*(sqrt(self.symb_x.^2 +  self.symb_y.^2));
+          expr = -1*scalar*(sqrt((self.symb_x+0.2).^2 +  self.symb_y.^2));
           self.symb_f = self.symb_f + expr;
       end
       function [] = move_neato(self)
@@ -154,7 +154,7 @@ classdef SackState < handle
 
       end
       function [] = goal(self)
-          for iter=1:1000
+          for iter=1:30
               self.commands = [self.commands; self.x self.y];
               move_neato(self);
           end
@@ -176,11 +176,13 @@ classdef SackState < handle
           % plot out contour if in debug mode
           if(self.debug_mode)
               scatter(self.outliers(:,1), self.outliers(:,2))
-              add_sink(self,1.05,-0.45, 0.135);
+              add_sink(self,1.05,-0.40, 0.135);
               bias_center(self);
               add_source_line(self,[0.235; -0.55], [0.50; -0.87]); % our scans are bad
               add_source_line(self,[-0.09; -0.53], [-0.27; -0.31]); % our scans are bad
               goal(self);
+
+              axis equal; xlim([-1.5,1.5]); ylim([-1.5,1.5]);
 
               %[X,Y] = meshgrid(-1.5:0.01:1.5,-1.5:0.01:1.5);
               %Z = 
