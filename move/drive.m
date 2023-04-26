@@ -1,5 +1,11 @@
-clear all; close all;
+close all;
 
+global encoders; 
+global glob_time;
+encoders = [];
+glob_time = tic;
+
+figure()
 points = [
    -0.8400   -0.9300
    -0.7515   -0.8089
@@ -21,8 +27,8 @@ points = [
     0.8852   -0.2979
     1.0282   -0.3431
     ];
-figure()
-scatter(points(:,1), points(:,2));
+plot(points(:,1), points(:,2));
+axis equal;
 
 [sensors,vels]= neatoSim(-0.8400, -0.9300, deg2rad(90), 1); % create the simulator
 pause(15); % give the simulator a few seconds to load

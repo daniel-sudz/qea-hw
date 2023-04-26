@@ -14,6 +14,9 @@ function [target_angle, cord2] = move_point(cur_angle, cord1, cord2, sensors, ve
 
     tic; 
     while(toc < rotation_time)
+        global encoders; 
+        global glob_time;
+        encoders = [encoders; toc(glob_time) sensors.encoders];
         if(target_angle > cur_angle) 
            vels.lrWheelVelocitiesInMetersPerSecond = [-1*MAX_SPEED_ROTATE, MAX_SPEED_ROTATE];
         else
