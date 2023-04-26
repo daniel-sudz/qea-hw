@@ -6,20 +6,21 @@ classdef SackState < handle
       fit_circle_origins = []; 
       fit_circle_radii = [];
       circle_found = 0;
-      
-      % contour plot tool
-      mesh_grid_min = -1.5; 
-      mesh_grid_max = 1.5; 
-      mesh_grid_step = 0.01;
-      mesh_grid_x = [];
-      mesh_grid_y = [];
-      mesh_grid_z = [];
-
+     
 
       % robot position
       x = -.84; 
       y = -.93; 
       commands = [];
+
+
+      % gradient equations 
+      symb_x = -1;
+      symb_y = -1; 
+      symb_f = 0;
+      symb_f_dx = 0;
+      symb_f_dy = 0;
+
    end
    properties(Constant)
       debug_mode = 1; % whether to plot or not while iterating  
@@ -57,10 +58,9 @@ classdef SackState < handle
    methods
       % constructor
       function self = SackState()
-         [x, y] = meshgrid(self.mesh_grid_min:self.mesh_grid_step:self.mesh_grid_max,self.mesh_grid_min:self.mesh_grid_step:self.mesh_grid_max);
-         self.mesh_grid_x = x;
-         self.mesh_grid_y = y;
-         self.mesh_grid_z = self.mesh_grid_x*0 + self.mesh_grid_y*0;
+            syms symb_x symb_y;
+            self.symb_x = symb_x;
+            self.symb_y = symb_y;
       end
       function [model_found] = sack_iter(self)
             %{
@@ -107,53 +107,39 @@ classdef SackState < handle
             % some model was found
             model_found = 1;
       end
-      % marks a point in the gauntlet as a place to avoid
-      function [] = add_source(self, x, y)
-            self.mesh_grid_z = self.mesh_grid_z + 5*log(sqrt(((self.mesh_grid_x) - x).^2+ ((self.mesh_grid_y) - y).^2));
-      end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-            for pheta=0:0.01:2*pi
-                loc_x = x + pheta*cos(pheta)*rad;
-                loc_y = y + pheta*sin(pheta)*rad;
-                self.mesh_grid_z = self.mesh_grid_z - 1*log(sqrt(((self.mesh_grid_x) - loc_x).^2+ ((self.mesh_grid_y) - loc_y).^2));
-            end
+
       end
       function [] = add_source_line(self, line_start, line_end)
-          resolution = ceil(norm(line_end - line_start) * 100);
-          for iter=1:resolution
-              intermediate = line_start + (((line_end - line_start) ./ resolution) * iter);
-              add_source(self, intermediate(1), intermediate(2));
-          end
+          syms u; 
+          pos = line_start + (line_end - line_start) .* u;
+          expr = log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
+          res = int(expr, u, [0,1], 'Hold', true);
+          
+          self.symb_f = self.symb_f + res;
+          
+          % update derivitives
+          dx = diff(res, self.symb_x);
+          dy = diff(res, self.symb_y);
+          self.symb_f_dx = self.symb_f_dx + dx;
+          self.symb_f_dy = self.symb_f_dy + dy;
       end
       function [] = move_neato(self) 
-         [Dx, Dy] = gradient(self.mesh_grid_z);
+         dx = subs(self.symb_f_dx, self.symb_x, self.x);
+         dy = subs(self.symb_f_dy, self.symb_y, self.y);
 
-         mesh_grid_x_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.x / self.mesh_grid_step));
-         mesh_grid_y_index = ceil(self.mesh_grid_max/self.mesh_grid_step + (self.y / self.mesh_grid_step));
-         
-         mesh_grid_x_index = min(mesh_grid_x_index, size(self.mesh_grid_z,1));
-         mesh_grid_x_index = max(0, mesh_grid_x_index);
-
-         mesh_grid_y_index = min(mesh_grid_y_index, size(self.mesh_grid_z,1));
-         mesh_grid_y_index = max(0, mesh_grid_y_index);
-
-
-         move_direction = [Dx(mesh_grid_y_index, mesh_grid_x_index); Dy(mesh_grid_y_index, mesh_grid_x_index)]; 
-         move_direction = move_direction ./ norm(move_direction);
-         move_direction = move_direction ./ 5;
-
-         while(self.x + move_direction(1) > 1.5 || self.x + move_direction(1) < -1.5 || self.y + move_direction(2) < -1.5)
-            move_direction = move_direction * 0.9;
-         end
+         dir = [double(dx) double(dy)];
+         dir = dir ./ norm(dir);
+         dir = dir / 5;
 
          % move the actual neato
 
          % stop moving the neato
 
          % update our position where we think we are
-         self.x = self.x + move_direction(1);
-         self.y = self.y + move_direction(2);
+         self.x = self.x + dir(1);
+         self.y = self.y + dir(2);
 
       end
       function [] = goal(self)
