@@ -108,9 +108,9 @@ classdef SackState < handle
       end
       % marks a point in the gauntlet as a place to seek
       function [] = add_sink(self, x, y, rad)
-        scalar = 10;
+        scalar = 1000;
         syms u; 
-        pos = [x + rad*2*pi*cos(u); y + rad*2*pi*sin(u)];
+        pos = [x + rad*cos(2*pi*u); y + rad*sin(2*pi*u)];
         expr = -1*scalar*log(sqrt( (self.symb_x - pos(1)).^2 +  (self.symb_y - pos(2)).^2 ));
         res = int(expr, u, [0,1], 'Hold', true);
         self.symb_f = self.symb_f + res;
@@ -130,7 +130,7 @@ classdef SackState < handle
 
          dir = [dx(self.x,self.y) dy(self.x,self.y)];
          dir = dir ./ norm(dir);
-         dir = dir / 5;
+         dir = dir / 20;
 
          % move the actual neato
 
@@ -142,7 +142,7 @@ classdef SackState < handle
 
       end
       function [] = goal(self)
-          for iter=1:11
+          for iter=1:100
               self.commands = [self.commands; self.x self.y];
               move_neato(self);
           end
