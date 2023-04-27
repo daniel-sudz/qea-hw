@@ -30,4 +30,5 @@ for i=1:size(measured_v)
 end
 
 hold on;
-scatter(measured_r(:,1), measured_r(:,2));
+plt = plot(measured_r(:,1), measured_r(:,2), '--', 'Color', 'white');
+legend("Contour Plot", "Theoretical Path", "Measured Encoder Path");
