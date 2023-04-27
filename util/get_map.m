@@ -1,6 +1,6 @@
 %#ok<*AGROW> 
 function [pos_x, pos_y] = get_map()
-    angle_matrix = transpose(table2array(readtable('data/hw6/origin-angle.csv')));
+    angle_matrix = linspace(0,2*pi,360);
     
     offsets = [
         -0.83, 0.80, 2.5*pi()/180;
@@ -22,7 +22,7 @@ function [pos_x, pos_y] = get_map()
     pos_y = []; 
     
     for i=1:size(offsets, 1)
-        [x_, y_] = neeto_to_global(offsets(i,1), offsets(i,2), offsets(i,3), load(append("data/scan", int2str(i), ".csv")), angle_matrix);
+        [x_, y_] = neeto_to_global(offsets(i,1), offsets(i,2), offsets(i,3), load(append("../data/scan", int2str(i), ".csv")), angle_matrix);
         % if you want to visualize all the different layers, you can use:
         % pos_x = [pos_x; x_]
         % pos_y = [pos_y; y_];
