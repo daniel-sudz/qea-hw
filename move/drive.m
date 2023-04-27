@@ -26,10 +26,13 @@ points = [
     0.7422   -0.2528
     0.8852   -0.2979
     1.0282   -0.3431
+    1.4, -0.3431 + (1.4-1.0282)*-0.35,
     ];
 plot(points(:,1), points(:,2));
 axis equal;
 
-[sensors,vels]= neatoSim(-0.8400, -0.9300, deg2rad(90), 1); % create the simulator
+%[sensors,vels]= neatoSim(-0.8400, -0.9300, deg2rad(90), 1); % create the simulator
+[sensors,vels]= neato('192.168.16.82'); % create the simulator
+
 pause(15); % give the simulator a few seconds to load
 move_many(points, sensors, vels);

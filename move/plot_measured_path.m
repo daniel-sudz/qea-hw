@@ -15,7 +15,7 @@ measured_vr_data = diff(encoder_data_clean(:,3)) ./ diff(encoder_data_clean(:,1)
 measured_v = (measured_vl_data + measured_vr_data) / 2; 
 measured_w = (measured_vr_data - measured_vl_data) / 0.245; 
 
-measured_theta = [pi/2];
+measured_theta = [pi/4];
 for i=1:size(measured_w)
     delta_t = encoder_data_clean(i+1,1) - encoder_data_clean(i,1);
     measured_theta = [measured_theta; measured_theta(end) + measured_w(i)*delta_t];

@@ -1,6 +1,6 @@
 % moves between two points by first rotating and then moving in a straight line
 function [target_angle, cord2] = move_point(cur_angle, cord1, cord2, sensors, vels)
-    MAX_SPEED_ROTATE = 0.05;
+    MAX_SPEED_ROTATE = 0.02;
     MAX_SPEED_MOVE = 0.1;
     WHEEL_BASE = 0.245; 
 
