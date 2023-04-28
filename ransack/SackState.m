@@ -160,7 +160,6 @@ classdef SackState < handle
           end
           if(self.theoretical_map)
               plt = plot(self.commands(:,1), self.commands(:,2), 'black', 'LineWidth', 10);
-              legend(plt, "Theoretical Gradient Descent");
           end
       end
       % run iterative RANSACK with multiple models
@@ -215,6 +214,9 @@ classdef SackState < handle
 
                       end
                   end
+                  
+                  legend("Gradient", "Theoretical Path");
+
 
                   %[Dx, Dy] = gradient(self.mesh_grid_z);
                   %quiver(self.mesh_grid_x, self.mesh_grid_y, Dx, Dy)
