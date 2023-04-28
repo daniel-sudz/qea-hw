@@ -24,8 +24,9 @@ classdef SackState < handle
    properties(Constant)
       debug_mode = 1; % whether to plot or not while iterating  
       color_map = 1;
-      quiver_map = 1;
-      theoretical_map = 1;
+      quiver_map = 0;
+      theoretical_map = 0;
+      plot_fit_lines = 0;
 
       % RANSACK LINE FIT --------------------------------------------------
       line_vertical_thresh = 0.1; % inlier threhold for vertical line fit
@@ -102,7 +103,9 @@ classdef SackState < handle
                    color = [rand,rand,rand];
                    add_source_line(self, fit_seg_start, fit_seg_end);
                    scatter(line_fit_inliers(:,1), line_fit_inliers(:,2), 'MarkerFaceColor', color, 'MarkerEdgeColor', color);
-                   plot([fit_seg_start(1), fit_seg_end(1)], [fit_seg_start(2), fit_seg_end(2)], 'Color', color);
+                   if(self.plot_fit_lines)
+                        plot([fit_seg_start(1), fit_seg_end(1)], [fit_seg_start(2), fit_seg_end(2)], 'Color', color);
+                   end
                end
             end
 
@@ -215,7 +218,7 @@ classdef SackState < handle
                       end
                   end
                   
-                  legend("Gradient", "Theoretical Path");
+                  legend("Gradient");
 
 
                   %[Dx, Dy] = gradient(self.mesh_grid_z);
