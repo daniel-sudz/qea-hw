@@ -1,6 +1,7 @@
 %#ok<*AGROW> 
 function [pos_x, pos_y] = get_map()
     angle_matrix = linspace(0,2*pi,360);
+    angle_matrix = transpose(table2array(readtable('../data/angles.csv')));
     
     offsets = [
         -0.83, 0.80, 2.5*pi()/180;
