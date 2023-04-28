@@ -201,6 +201,21 @@ classdef SackState < handle
               set(gca,'Children',flip(h))
 
               if(self.quiver_map)
+                  eps = 0.000001;
+                  num_f = matlabFunction(self.symb_f);
+                  dx = @(x_,y_) ((num_f(x_+eps,y_) - num_f(x_,y_))/ eps);
+                  dy = @(x_,y_) ((num_f(x_,y_+eps) - num_f(x_,y_))/ eps);
+                  for qx=-1.5:0.05:1.5
+                      for qy=-1.5:0.05:1.5                      
+                            qvec = [dx(qx,qy), dy(qx,qy)];
+                            qvec = qvec ./ norm(qvec);
+                            qvec = qvec / 20;
+                            obj = quiver(qx, qy, qvec(1), qvec(2), 'Color', 'white');
+                            obj.Annotation.LegendInformation.IconDisplayStyle = "off";
+
+                      end
+                  end
+
                   %[Dx, Dy] = gradient(self.mesh_grid_z);
                   %quiver(self.mesh_grid_x, self.mesh_grid_y, Dx, Dy)
               end
